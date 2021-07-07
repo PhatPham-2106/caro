@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="">
+    <title>CARO</title>
+</head>
+<style>
+    td {
+        font-size: 35px;
+        width: 50px;
+        height: 50px;
+        text-align: center;
+        font-weight: bold;
+        font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif ;
+    }
+
+    table {
+        background-color:rgb(174, 247, 211);
+    }
+
+    span {
+        font-family:'Courier New', Courier, monospace;
+        font-size: 26px;
+        color: white;
+    }
+
+    body {
+        background-image: url('https://img4.thuthuatphanmem.vn/uploads/2020/07/05/hinh-anh-background-mau-sac-that-dep_034909644.jpg');
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        background-size: cover;
+    }
+    .red{
+        color:rgb(213, 121, 121);
+    }
+    .green{
+        color: rgb(107, 153, 218);
+    }
+</style>
+
+<body>
+    <h1 style="font-size: 60px;color:rgb(182, 137, 39);text-align: center;font-weight: bold;font-family: cursive;">CARO GAME</h1>
+    <div>
+        <span style="color:rgb(255, 248, 37);font-size: 40px;">thông tin:</span>
+        <br>
+        <span id="ten_1" >Người chơi 1:</span><span style="color:rgb(214, 121, 121);font-weight: bold;font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;">x </span><span
+            >(<span style="color:rgb(213, 121, 121);font-weight: bold;font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;">x</span> đi trước)</span>
+        <br>
+        <span id="ten_2" >Người chơi 2:</span><span style="color:rgb(106, 159, 233);font-weight: bold;font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;">o</span>
+    </div>
+    <table id="table" border="2" cellspacing="0" align="center">
+    </table>
+</body>
+<script>
+    let row = 25;
+    let col = 20;
+    let luot = "x";
+    let str = "";
+    let wincell=[];
+    const WIN=5;
+    let ten1 = prompt("nhập tên người chơi 1: ");
+    let ten2 = prompt("nhập tên người chơi 2: ");
+    document.getElementById("ten_1").innerText = ten1 + ": ";
+    document.getElementById("ten_2").innerText = ten2 + ": ";
+    function banchoi() {
+        for (i = 0; i < row; i++) {
+            str += "<tr>";
+            for (j = 0; j < col; j++) {
+                str += "<td onclick='danh(this," + i + ',' + j + ")'id=cell-" + i + "-" + j + " style='font-size:35px'></td>";
+            }
+            str += "</tr>";
+        }
+        document.getElementById('table').innerHTML = str;
+    }
+    banchoi()
+    function danh(cell, i, j) {
+        let td = document.getElementById('cell-' + i + '-' + j)
+        if (cell.innerHTML == "") {
+            cell.innerHTML = luot;
+            if (luot == "o") {
+                luot = "x";
+                td.classList.add('green');
+            } else {
+                luot = "o";
+                td.classList.add('red');
+            }
+        }
+        checkngang(i, j);
+        checkdoc(i, j);
+        checkcheo1(i, j);
+        checkcheo2(i, j)
+    }
+    function checkngang(i, j) {
+        wincell=[];
+        let count = 1;
+        let value = document.getElementById('cell-' + i + "-" + j).innerHTML;
+        let x = 1;
+        if (j < col - 1) {
+            while (value == document.getElementById('cell-' + i + "-" + (j + x)).innerHTML) {
+                count++;
+                x++;
+            }
+        }
+
+        x = 1;
+        if (j > 1) {
+            while (value == document.getElementById('cell-' + i + "-" + (j - x)).innerHTML) {
+                count++;
+                x++;
+            }
+        }
+        gameOver(count);
+    }
+    function checkdoc(i, j) {
+        wincell=[];
+        let count = 1;
+        let value = document.getElementById('cell-' + i + "-" + j).innerHTML;
+        let y = 1;
+        if (j < row - 1) {
+            while (value == document.getElementById('cell-' + (i + y) + "-" + j).innerHTML) {
+                count++;
+                y++;
+            }
+        }
+        y = 1;
+        if (j > 1)
+            while (value == document.getElementById('cell-' + (i - y) + "-" + j).innerHTML) {
+                count++;
+                y++;
+            }
+            gameOver(count);
+    }
+    function checkcheo1(i, j) {
+        wincell=[];
+        let count = 1;
+        let value = document.getElementById('cell-' + i + "-" + j).innerHTML;
+        let c = 1;
+        if (j < row - 1 && i > 1) {
+            while (value == document.getElementById('cell-' + (i + c) + "-" + (j - c)).innerHTML) {
+                count++;
+                c++;
+            }
+        }
+        c = 1;
+        if (j > 1)
+            while (value == document.getElementById('cell-' + (i - c) + "-" + (j + c)).innerHTML) {
+                count++;
+                c++;
+            }
+            gameOver(count);
+    }
+    function checkcheo2(i, j) {
+        wincell=[];
+        let count = 1;
+        let value = document.getElementById('cell-' + i + "-" + j).innerHTML;
+        let d = 1;
+        if (j < row - 1 && i > 1) {
+            while (value == document.getElementById('cell-' + (i + d) + "-" + (j + d)).innerHTML) {
+                count++;
+                d++;
+            }
+        }
+        d = 1;
+        if (j > 1)
+            while (value == document.getElementById('cell-' + (i - d) + "-" + (j - d)).innerHTML) {
+                count++;
+                d++;
+            }
+            gameOver(count);
+    }
+    function gameOver(count){
+        let so=luot;
+        if (so=='x'){
+            so='o';
+        }else{so='x';}
+        if (count>=WIN){
+          if(confirm(so+ " thắng! (nhấn OK để chơi lại)")==true){
+            location.reload();
+          }           
+        }
+    }
+
+</script>
+
+</html>
